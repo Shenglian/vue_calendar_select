@@ -136,7 +136,7 @@
     },
     methods: {
       setSpecificDay(type) {
-        const specificTime = new Date(this.activeTypeDay === 'start' ? this.setDays[0] : this.setDays[1]);
+        const specificTime = new Date(this.activeTypeDay === 'start' ? this.defaultStartDay : this.defaultEndDay);
 
         this.year = specificTime.getFullYear();
         this.month = specificTime.getMonth();
@@ -146,10 +146,13 @@
         this.createCalendar();
       },
       setData() {
-        this.defaultStartDay = this.setDays[0];
-        this.defaultEndDay = this.setDays[1];
-        this.startDay = this.setDays[0];
-        this.endDay = this.setDays[1];
+        const start = '2001/1/1';
+        const end = '2011/1/1';
+
+        this.defaultStartDay = this.setDays[0] || start;
+        this.defaultEndDay = this.setDays[1] || end;
+        this.startDay = this.setDays[0] || start;
+        this.endDay = this.setDays[1] || end;
       },
       init() {
         this.setData();

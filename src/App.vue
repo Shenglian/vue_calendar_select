@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <Calendar/>
+    <div class="parent_data"> {{ start }} / {{ end }} </div>
+    <Calendar @sendDate="getDate" :setDays="setDays"/>
   </div>
 </template>
 
@@ -11,6 +12,19 @@ export default {
   name: 'app',
   components: {
     Calendar
+  },
+  data() {
+    return {
+      setDays: ['', ''],
+      start: '',
+      end: '',
+    }
+  },
+  methods: {
+    getDate({ startDay, endDay } = {}) {
+      this.start = startDay;
+      this.end = endDay;
+    },
   }
 }
 </script>
@@ -23,5 +37,12 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.parent_data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
 }
 </style>
