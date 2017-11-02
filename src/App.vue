@@ -1,7 +1,11 @@
 <template>
   <div id="app">
-    <div class="parent_data"> {{ start }} / {{ end }} </div>
-    <Calendar @sendDate="getDate" :setDays="setDays"/>
+    <div class="parent_data"> {{ start }} - {{ end }} </div>
+    <Calendar 
+      @sendDate="getDate" 
+      :setDays="setDays" 
+      :placeholderTextStartDay="textStartDay" 
+      :placeholderTextEndDay="textEndDay" />
   </div>
 </template>
 
@@ -15,12 +19,22 @@ export default {
   },
   data() {
     return {
-      setDays: ['', ''],
+      setDays: ['2017/11/2', '2018/11/2'],
       start: '',
       end: '',
+      textStartDay: 'placeholderTextStartDay',
+      textEndDay: 'placeholderTextEndDay',
     }
   },
+  mounted() {
+    this.setPropValue();
+  },
+  computed: {},
   methods: {
+    setPropValue() {
+      this.start = this.setDays[0];
+      this.end = this.setDays[1];
+    },
     getDate({ startDay, endDay } = {}) {
       this.start = startDay;
       this.end = endDay;

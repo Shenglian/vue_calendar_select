@@ -2,7 +2,7 @@
   <div for="" class="calendar_wrapper">
     <label>
       <input 
-        :placeholder="placeholderTextStartDay || '起始日期'"
+        :placeholder="placeholderTextStartDay"
         :class="{ active: activeTypeDay === 'start' }"
         v-model="startDay"
         type="text" 
@@ -11,10 +11,10 @@
         <svg v-if="startDay" :class="{ enabled: startDay }" type="clear" viewBox="0 0 20 20" @click="clearDateValue('start')"><use xlink:href="#clear"></use></svg>
         <svg type="select" viewBox="0 0 11 6"><use xlink:href="#select"></use></svg>
     </label>
-    <span> ~ </span>
+    <span class="divider"> ~ </span>
     <label>
       <input 
-        :placeholder="placeholderTextEndDay || '結束日期'"
+        :placeholder="placeholderTextEndDay"
         :class="{ active: activeTypeDay === 'end' }"
         v-model="endDay"
         type="text" 
@@ -43,17 +43,16 @@
           <div class="" v-for="(list, z) in weekList" :key="z">{{ list }}</div>
         </div>
         <div class="week" v-for="(w, i) in weeks" :key="i">
-          <!-- out_range: Date.parse(`${d.year}/${d.month}/${d.date}`) > Date.parse(new Date()), -->
+          <!-- out_default_range: Date.parse(`${d.year}/${d.month}/${d.date}`) > Date.parse(new Date()), -->
           <div 
-          @click="outRange(d)" 
+          @click="clickDate(d)" 
           v-for="(d, j) in w" 
           :key="j" 
-          :class="{ 
-            current_range: currentRange(d),
-            default_start_day: setDaultStartDay(d),
-            default_end_day: setDaultEndDay(d),
-            if_startDay_selected: Date.parse(endDay) < Date.parse(`${d.year}/${d.month}/${d.date}`) && activeTypeDay === 'start',
-            if_endDay_selected: Date.parse(startDay) > Date.parse(`${d.year}/${d.month}/${d.date}`) && activeTypeDay === 'end',
+          :class="{
+            current_selected_range: currentSelectdRange(d) === true,
+            default_start_day: setDaultStartDayClass(d),
+            default_end_day: setDaultEndDayClass(d),
+            out_default_range: d.default_range === false,
             current_day: d.current === true,
           }"
           :data-year="d.year"
@@ -89,8 +88,8 @@
           return ['2001/3/20', '2018/3/20']; // [Start, End]
         }
       },
-      placeholderTextStartDay: ['String'],
-      placeholderTextEndDay: ['String'],
+      placeholderTextStartDay: String,
+      placeholderTextEndDay: String,
     },
     data() {
       return {
@@ -111,9 +110,10 @@
         month: '',
         date: '',
 
-        preMonthDays: [],
+        lastMonthDays: [],
         currentMonthDays: [],
-        nextMontDays: [],
+        nextMonthDays: [],
+
         weeks: [],
         chunkSize: 7,
       };
@@ -141,14 +141,11 @@
         this.year = specificTime.getFullYear();
         this.month = specificTime.getMonth();
         this.date = specificTime.getDate();
-
-        this.clearCalenar();
-        this.createCalendar();
       },
       // set default / change time format
       setValue() {
-        let start = this.setDays[0] ? this.setDays[0] = this.setDays[0].replace(/-/g, "/") : '2001/1/1';
-        let end = this.setDays[1] ? this.setDays[1] = this.setDays[1].replace(/-/g, "/") : '2011/1/1';
+        let start = this.setDays[0] ? this.setDays[0].replace(/-/g, "/") : '2001/1/1';
+        let end = this.setDays[1] ? this.setDays[1].replace(/-/g, "/") : '2011/1/1';
 
         this.defaultStartDay = start;
         this.defaultEndDay = end;
@@ -159,13 +156,13 @@
         this.setValue();
         this.setSpecificDay();
       },
-      setDaultStartDay(date) {
+      setDaultStartDayClass(date) {
         let dateGroup = Date.parse(`${date.year}/${date.month}/${date.date}`);
         if (this.defaultStartDay) {
           return Date.parse(this.defaultStartDay) === dateGroup
         }
       },
-      setDaultEndDay(date) {
+      setDaultEndDayClass(date) {
         let dateGroup = Date.parse(`${date.year}/${date.month}/${date.date}`);
         if (this.defaultEndDay) {
           return Date.parse(this.defaultEndDay) === dateGroup
@@ -186,30 +183,16 @@
           })
         );
       },
-      currentRange(date) {
+      currentSelectdRange(date) {
         let dateGroup = Date.parse(`${date.year}/${date.month}/${date.date}`);
-        let result = null;
+        let result = false;
 
         this.startDay && this.endDay ? (
-          result = Date.parse(this.startDay) <= dateGroup && dateGroup <= Date.parse(this.endDay)
-        ) : this.startDay ? (
-          result = Date.parse(this.startDay) <= dateGroup && dateGroup <= Date.parse(new Date())
-        ) : this.endDay ? (
-          result = dateGroup <= Date.parse(this.endDay)
-        ) : (
-          // 預設一開始從今天的日期開始全選
-          result = dateGroup <= Date.parse(new Date())
-        )
+          result = Date.parse(this.startDay) <= dateGroup && Date.parse(this.endDay) >= dateGroup
+        ) : null
 
         return result;
       },
-      outRange(date) {
-        let dateGroup = Date.parse(`${date.year}/${date.month}/${date.date}`);
-
-        // 條件為 this.startDay < dateGroup < this.endDay 這區間內
-        (Date.parse(this.defaultStartDay) <= dateGroup) && (Date.parse(this.defaultEndDay) >= dateGroup) ? this.clickDate(date) : null;
-      },
-
       stopProp(event) {
         event.stopPropagation();
       },
@@ -231,13 +214,19 @@
         this.activeTypeDay = type;
 
         this.setSpecificDay(type);
+
+        this.clearCalenar();
+        this.createCalendar();
       },
       clickDate(ele) {
         const {
           date,
           month,
           year,
+          default_range,
         } = ele;
+
+        if (!default_range) return;
 
         this.activeTypeDay === 'start' ? (
           this.startDay = `${year}/${month}/${date}`
@@ -283,49 +272,79 @@
         this.createCalendar();
       },
       clearCalenar() {
-        this.preMonthDays = [];
+        this.lastMonthDays = [];
         this.currentMonthDays = [];
-        this.nextMontDays = [];
+        this.nextMonthDays = [];
         this.weeks = [];
       },
+
       // this.month 一開始沒有 + 1
       // this.month === 0 的時後，要計算成去年和
       createCalendar() {
         let currentFirstDay = new Date(this.year, this.month, 1).getDay();
         let currentMonthDaysLength = new Date(this.year, this.month + 1, 0).getDate();
-      
+        
         // 上個月天數
+        let lastYear = this.month === 0 ? this.year - 1 : this.year;
+        let lastMonth = this.month === 0 ? 12 : this.month;
+        let lastDate = null;
+        let lastDateGroup = null;
+
         for(let i = currentFirstDay - 1; i >= 0; i--){
-          this.preMonthDays.push({
-            'year': this.month === 0 ? this.year - 1 : this.year,
-            'month': this.month === 0 ? 12 : this.month,
-            'date': new Date(this.year, this.month, -i).getDate(),
+
+          lastDate = new Date(this.year, this.month, -i).getDate();
+          lastDateGroup = Date.parse(`${lastYear}/${lastMonth}/${lastDate}`);
+
+          this.lastMonthDays.push({
+            'year': lastYear,
+            'month': lastMonth,
+            'date': lastDate,
             'prev': true,
+            'default_range': (Date.parse(this.defaultStartDay) <= lastDateGroup) && (Date.parse(this.defaultEndDay) >= lastDateGroup),
           })
         }
         
         // 這個月天數
+        let currentYear = this.year;
+        let currentMonth = this.month + 1;
+        let currentDate = null;
+        let currentDateGroup = null;
+
         for(let i = 1; i <= currentMonthDaysLength; i++){
+
+          currentDate = i;
+          currentDateGroup = Date.parse(`${currentYear}/${currentMonth}/${currentDate}`);
+
           this.currentMonthDays.push({
-            'year': this.year,
-            'month': this.month + 1,
-            'date': i,
+            'year': currentYear,
+            'month': currentMonth,
+            'date': currentDate,
             'current': true,
+            'default_range': (Date.parse(this.defaultStartDay) <= currentDateGroup) && (Date.parse(this.defaultEndDay) >= currentDateGroup),
           })
         }
         
         // 下個月天數
-        const theRestDays = this.totalDays - this.preMonthDays.length - this.currentMonthDays.length;
+        let nextYear = this.month + 2 === 13 ? this.year + 1 : this.year;
+        let nextMonth = this.month + 2 === 13 ? 1 : this.month + 2;
+        let nextDate = null;
+        let nextDateGroup = null;
 
+        const theRestDays = this.totalDays - this.lastMonthDays.length - this.currentMonthDays.length;
         for (let i = 1; i <= theRestDays; i++) {
-          this.nextMontDays.push({
-            'year': this.month + 2 === 13 ? this.year + 1 : this.year,
-            'month': this.month + 2 === 13 ? 1 : this.month + 2,
-            'date': i,
+
+          nextDate = i;
+          nextDateGroup = Date.parse(`${nextYear}/${nextMonth}/${nextDate}`);
+
+          this.nextMonthDays.push({
+            'year': nextYear,
+            'month': nextMonth,
+            'date': nextDate,
+            'default_range': (Date.parse(this.defaultStartDay) <= nextDateGroup) && (Date.parse(this.defaultEndDay) >= nextDateGroup),
           });
         }
         
-        const days = this.preMonthDays.concat(this.currentMonthDays, this.nextMontDays);
+        const days = this.lastMonthDays.concat(this.currentMonthDays, this.nextMonthDays);
         const daysLength = days.length;
         
         for (let i = 0; i < days.length; i += this.chunkSize) {
@@ -484,8 +503,8 @@ label {
   label {
     position: relative;
   }
-  span {
-    margin-right: 10px;
+  .divider {
+    margin: 0 10px;
   }
   input { 
     display: inline-flex;
@@ -611,33 +630,27 @@ label {
 	width: 30px;
 	height: 30px;
   font-size: 12px;
+  border: 1px solid transparent;
 }
 
 .week div {
   transition: all, .2s;
   &:hover {
-    border: none;
     background-color: #4DA1FF;
     color: #ffffff;
   }
-  &.current_range {
+  
+  &.current_selected_range {
     border: 1px solid #4DA1FF;
     color: #4DA1FF;
-    &:hover {
-      color: #ffffff;
-    }
+    &:hover { color: #ffffff; }
   }
+  
+  &.out_default_range { color: #DDD; }
 
-  &.default_start_day { border: 1px solid red; color: red;}
-  &.default_end_day { border: 1px solid green; color: green;}
+  &.default_start_day { border: 1px solid red; background-color: red; color: #ffffff;}
+  &.default_end_day { border: 1px solid green; background-color: green; color: #ffffff;}
 
-  &.if_startDay_selected,
-  &.if_endDay_selected,
-  &.out_range {
-    color: #DDD;
-  }
-  &.current_day {
-    font-weight: bold;
-  }
+  &.current_day { font-weight: bold; }
 }
 </style>
