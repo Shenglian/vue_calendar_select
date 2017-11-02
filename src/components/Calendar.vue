@@ -145,14 +145,15 @@
         this.clearCalenar();
         this.createCalendar();
       },
+      // set default / change time format
       setValue() {
-        const start = '2001/1/1';
-        const end = '2011/1/1';
+        let start = this.setDays[0] ? this.setDays[0] = this.setDays[0].replace(/-/g, "/") : '2001/1/1';
+        let end = this.setDays[1] ? this.setDays[1] = this.setDays[1].replace(/-/g, "/") : '2011/1/1';
 
-        this.defaultStartDay = this.setDays[0] || start;
-        this.defaultEndDay = this.setDays[1] || end;
-        this.startDay = this.setDays[0] || start;
-        this.endDay = this.setDays[1] || end;
+        this.defaultStartDay = start;
+        this.defaultEndDay = end;
+        this.startDay = start;
+        this.endDay = end;
       },
       init() {
         this.setValue();
