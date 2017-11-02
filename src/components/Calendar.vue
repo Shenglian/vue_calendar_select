@@ -131,7 +131,7 @@
     },
     watch: {
       'setDays'() {
-        this.setData();
+        this.setValue();
       },
     },
     methods: {
@@ -145,7 +145,7 @@
         this.clearCalenar();
         this.createCalendar();
       },
-      setData() {
+      setValue() {
         const start = '2001/1/1';
         const end = '2011/1/1';
 
@@ -155,7 +155,7 @@
         this.endDay = this.setDays[1] || end;
       },
       init() {
-        this.setData();
+        this.setValue();
         this.setSpecificDay();
       },
       setDaultStartDay(date) {

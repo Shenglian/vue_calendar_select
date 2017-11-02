@@ -1,9 +1,9 @@
 {
   "name": "vue_calendar_select",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "select start_date and end_date in datepicker",
   "author": "Sheng",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "npm run dev",
@@ -12,6 +12,7 @@
   "dependencies": {
     "vue": "^2.5.2"
   },
+  "main": "src/components/Calendar.vue",
   "devDependencies": {
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
@@ -59,5 +60,6 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "license": "MIT"
 }
