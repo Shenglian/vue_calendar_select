@@ -1,6 +1,6 @@
 {
   "name": "vue_calendar_select",
-  "version": "1.0.6",
+  "version": "1.0.9",
   "description": "select start_date and end_date in datepicker",
   "author": "Sheng",
   "private": false,
@@ -8,6 +8,10 @@
     "dev": "node build/dev-server.js",
     "start": "npm run dev",
     "build": "node build/build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shenglian/vue_calendar_select.git"
   },
   "dependencies": {
     "vue": "^2.5.2"
@@ -61,5 +65,9 @@
     "last 2 versions",
     "not ie <= 8"
   ],
+  "bugs": {
+    "url": "https://github.com/Shenglian/vue_calendar_select/issues"
+  },
+  "homepage": "https://github.com/Shenglian/vue_calendar_select#readme",
   "license": "MIT"
 }
