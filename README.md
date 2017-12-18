@@ -17,6 +17,14 @@ $ npm install vue_calendar_select --save
 <CalendarSelect :setDays="setDays"></CalendarSelect>
 ```
 
+*datepickerStatus* prop if pass 'disable', datepicker will disable and get to disable class style
+``` html
+<script>
+  const datepickerStatus = 'disable';
+</script>
+<CalendarSelect :datepickerStatus="datepickerStatus"></CalendarSelect>
+```
+
 Emits events, receive startDate and endDate value from inside
 ``` html
 <CalendarSelect @sendDate="receiveDate"></CalendarSelect>
@@ -33,9 +41,7 @@ Emits events, receive startDate and endDate value from inside
 | Prop                    | Type            | Default                   | Description                                        |
 |-------------------------|-----------------|---------------------------|----------------------------------------------------|
 | setDays                 | Array           | '2001/3/20', '2018/3/20'  | array[0] = startDate, array[1] = endDate           |
-| placeholderTextStartDay | String          |                           | placeholder for startDate                          |
-| placeholderTextEndDay   | String          |                           | placeholder for endDate                            |
-
+| datepickerStatus        | String          |                           | set 'disable' prop for disable datepicker          |
 
 ## Events
 
@@ -44,4 +50,11 @@ These events are emitted on actions in the datepicker
 | Event             | Output            | Description                          |
 |-------------------|-------------------|--------------------------------------|
 | sendDate          | startDay, endDay  | get startDay and endDay value        |
+
+## Log
+
+#### 2017/12/18
+1. remove `placeholderTextStartDay`, `placeholderTextEndDay` props.
+2. add `datepickerStatus` prop.
+3. It world change datepicker by year on double arrow button.
 

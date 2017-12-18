@@ -3,6 +3,7 @@
     <div class="parent_data"> {{ start }} - {{ end }} </div>
     <Calendar 
       @sendDate="getDate" 
+      :datepickerStatus="datepickerStatus"
       :setDays="setDays" 
       :placeholderTextStartDay="textStartDay" 
       :placeholderTextEndDay="textEndDay" />
@@ -22,8 +23,7 @@ export default {
       setDays: ['2017/11/2', '2018/11/2'],
       start: '',
       end: '',
-      textStartDay: 'placeholderTextStartDay',
-      textEndDay: 'placeholderTextEndDay',
+      datepickerStatus: 'disable',
     }
   },
   mounted() {
