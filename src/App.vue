@@ -4,9 +4,11 @@
     <Calendar 
       @sendDate="getDate" 
       :datepickerStatus="datepickerStatus"
-      :setDays="setDays" 
-      :placeholderTextStartDay="textStartDay" 
-      :placeholderTextEndDay="textEndDay" />
+      :setDays="setDays" />
+    <Calendar 
+      @sendDate="getDate" 
+      :datepickerStatus="datepickerStatusEmpty"
+      :setDays="setDays" />
   </div>
 </template>
 
@@ -24,6 +26,7 @@ export default {
       start: '',
       end: '',
       datepickerStatus: 'disable',
+      datepickerStatusEmpty: '',
     }
   },
   mounted() {

@@ -58,7 +58,7 @@
       <div class="calendar-now-time">
         <div class="prev_month">{{ month === 0 ? 12 : month }}月</div>
         <div class="year">{{ year }}年 / {{ month + 1 }}月</div>
-        <div class="prev_month">{{ month + 2 === 13 ? 1 : month + 2 }}月</div>
+        <div class="next_month">{{ month + 2 === 13 ? 1 : month + 2 }}月</div>
       </div>
       <div class="week_wrapper">
         <div class="week_list">
@@ -524,9 +524,9 @@
   margin: 10px 0 20px 0;
   width: 100%;
   font-size: 12px;
-  .prev_month { flex: 1; }
-  .year { flex: 1; }
-  .prev_month { flex: 1; }
+  .prev_month { flex: 1; text-align: left; }
+  .year { flex: 2; text-align: center; }
+  .next_month { flex: 1; text-align: right; }
 }
 
 .calendar-action {
