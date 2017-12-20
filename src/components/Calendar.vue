@@ -113,10 +113,16 @@
     name: 'calendar',
     components: {},
     props: {
-      setDays: {
+      setLimitDays: {
         type: Array,
         default() {
-          return ['2001/3/20', '2018/3/20']; // [Start, End]
+          return ['2017/3/20', '2018/3/20']; // [Start, End]
+        }
+      },
+      setCurrentDays: {
+        type: Array,
+        default() {
+          return ['2017/3/30', '2018/3/10']; // [Start, End]
         }
       },
       datepickerStatus: '',
@@ -162,7 +168,7 @@
       }
     },
     watch: {
-      'setDays'() {
+      'setLimitDays'() {
         this.setValue();
       },
     },
@@ -176,13 +182,18 @@
       },
       // set default / change time format
       setValue() {
-        let start = this.setDays[0] ? this.setDays[0].replace(/-/g, "/") : '2001/1/1';
-        let end = this.setDays[1] ? this.setDays[1].replace(/-/g, "/") : '2011/1/1';
+        let start = this.setLimitDays[0] ? this.setLimitDays[0].replace(/-/g, "/") : null;
+        let end = this.setLimitDays[1] ? this.setLimitDays[1].replace(/-/g, "/") : null;
 
         this.defaultStartDay = start;
         this.defaultEndDay = end;
-        this.startDay = start;
-        this.endDay = end;
+
+        // Using defaultStartDay and defaultEndDay, if no pass setCurrentDays array.
+        let currentStart = this.setCurrentDays[0] ? this.setCurrentDays[0].replace(/-/g, "/") : this.defaultStartDay;
+        let currentEnd = this.setCurrentDays[1] ? this.setCurrentDays[1].replace(/-/g, "/") : this.defaultEndDay;
+
+        this.startDay = currentStart;
+        this.endDay = currentEnd;
       },
       init() {
         this.setValue();
@@ -202,18 +213,15 @@
       },
       clearDateValue(type) {
         type === 'start' ? (
-          this.startDay = this.defaultStartDay,
-          this.$emit('sendDate', {
-            startDay: '',
-            endDay: this.defaultEndDay,
-          })
+          this.startDay = this.defaultStartDay
         ) : (
-          this.endDay = this.defaultEndDay,
-          this.$emit('sendDate', {
-            startDay: this.defaultStartDay,
-            endDay: '',
-          })
+          this.endDay = this.defaultEndDay
         );
+
+        this.$emit('sendDate', {
+          startDay: this.defaultStartDay,
+          endDay: this.defaultEndDay,
+        })
       },
       currentSelectdRange(date) {
         let dateGroup = Date.parse(`${date.year}/${date.month}/${date.date}`);
