@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {
-      setLimitDays: ['', ''],
+      setLimitDays: ['2014/11/2', '2019/11/2'],
       limitStart: '',
       limitEnd: '',
 

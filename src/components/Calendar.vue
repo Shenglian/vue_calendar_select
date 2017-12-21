@@ -174,7 +174,11 @@
     },
     methods: {
       setSpecificDay(type) {
-        const specificTime = new Date(this.activeTypeDay === 'start' ? this.defaultStartDay : this.defaultEndDay);
+        // const specificTime = new Date(this.activeTypeDay === 'start' ? this.defaultStartDay : this.defaultEndDay);
+        const specificTime = new Date(
+          this.activeTypeDay === 'start' 
+          ? this.startDay ? this.startDay : this.defaultStartDay 
+          : this.endDay ? this.endDay : this.defaultEndDay);
 
         this.year = specificTime.getFullYear();
         this.month = specificTime.getMonth();
