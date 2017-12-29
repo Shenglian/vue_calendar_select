@@ -48,7 +48,7 @@ Emits events, receive startDate and endDate value from inside
 
 | Prop                    | Type            | Default                   | Description                                        |
 |-------------------------|-----------------|---------------------------|----------------------------------------------------|
-| setLimitDays            | Array           | '2017/3/20', '2018/3/20'  | set limit start day and end day                    |
+| setLimitDays            | Array           | '', ''                    | set limit start day and end day                    |
 | setCurrentDays          | Array           | '', ''                    | set current start day and end day                  |
 | datepickerStatus        | String          | ''                        | set 'disable' prop for disable datepicker          |
 
@@ -71,3 +71,5 @@ These events are emitted on actions in the datepicker
 1. change prop `setDays` to `setLimitDays`
 2. add `setCurrentDays` prop.
 
+#### 2017/12/29
+1. remove component default value in setLimitDays and setCurrentDays

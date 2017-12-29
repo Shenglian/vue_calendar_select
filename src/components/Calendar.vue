@@ -116,13 +116,13 @@
       setLimitDays: {
         type: Array,
         default() {
-          return ['2017/3/20', '2018/3/20']; // [Start, End]
+          return ['', '']; // [Start, End]
         }
       },
       setCurrentDays: {
         type: Array,
         default() {
-          return ['2017/3/30', '2018/3/10']; // [Start, End]
+          return ['', '']; // [Start, End]
         }
       },
       datepickerStatus: '',
